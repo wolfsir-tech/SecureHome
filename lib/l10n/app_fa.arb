@@ -1,0 +1,658 @@
+{
+    "@@locale":  "fa",
+    "appName":  "SecureHome",
+    "@appName":  {
+
+                 },
+    "tagline":  "امنیت خانه، به ساده‌ترین شکل.",
+    "@tagline":  {
+
+                 },
+    "welcomeHeadline":  "خانه‌تان را ایمن کنید. به سادگی.",
+    "@welcomeHeadline":  {
+
+                         },
+    "welcomeBody":  "SecureHome دستورات را از طریق پیامک به مرکز اعلام حریق GSM شما می‌فرستد. بدون فضای ابری، بدون حساب کاربری. فقط همین گوشی و سیم‌کارتی که داخل دستگاه قرار دارد.",
+    "@welcomeBody":  {
+
+                     },
+    "@name":  {
+
+              },
+    "getStarted":  "شروع کنید",
+    "@getStarted":  {
+
+                    },
+    "enterApp":  "ورود به SecureHome",
+    "@enterApp":  {
+
+                  },
+    "continueButton":  "ادامه",
+    "@continueButton":  {
+
+                        },
+    "notNow":  "الالان نه",
+    "@notNow":  {
+
+                },
+    "skipForNow":  "فعلاً رد شو",
+    "@skipForNow":  {
+
+                    },
+    "@flutterLocalizationsNote":  {
+
+                                  },
+    "cancel":  "انصراف",
+    "@cancel":  {
+
+                },
+    "close":  "بستن",
+    "@close":  {
+
+               },
+    "@ with a pattern":  {
+
+                         },
+    "save":  "ذخیره",
+    "@save":  {
+
+              },
+    "reset":  "بازنشانی",
+    "@reset":  {
+
+               },
+    "clear":  "پاک کردن",
+    "@clear":  {
+
+               },
+    "navHome":  "خانه",
+    "@navHome":  {
+
+                 },
+    "navHistory":  "تاریخچه",
+    "navSettings":  "تنظیمات",
+    "@navSettings":  {
+
+                     },
+    "alarmPhoneLabel":  "شماره تلفن دستگاه",
+    "@alarmPhoneLabel":  {
+
+                         },
+    "alarmPhoneHint":  "شماره سیم‌کارت داخل دستگاه را وارد کنید.",
+    "@alarmPhoneHint":  {
+
+                        },
+    "alarmPhoneExample":  "+98 912 123 4567",
+    "@alarmPhoneExample":  {
+
+                           },
+    "notSet":  "تنظیم نشده",
+    "@notSet":  {
+
+                },
+    "invalidAlarmPhone":  "شماره تلفن دستگاه نامعتبر است.",
+    "@invalidAlarmPhone":  {
+
+                           },
+    "armAlarm":  "فعال‌سازی",
+    "@armAlarm":  {
+
+                  },
+    "disarmAlarm":  "غیرفعال‌سازی",
+    "@disarmAlarm":  {
+
+                     },
+    "activate":  "فعال کن",
+    "@activate":  {
+
+                  },
+    "disableAlarm":  "غیرفعال کردن دستگاه",
+    "@disableAlarm":  {
+
+                      },
+    "armConfirmTitle":  "فعال شود؟",
+    "@armConfirmTitle":  {
+
+                         },
+    "@armConfirm":  {
+
+                    },
+    "armConfirmMessage":  "یک پیامک حاوی دستور فعال‌سازی به دستگاه ارسال می‌شود.",
+    "@armConfirmMessage":  {
+
+                           },
+    "disarmConfirmTitle":  "غیرفعال شود؟",
+    "@disarmConfirmTitle":  {
+
+                            },
+    "disarmConfirmMessage":  "آیا از ارسال دستور غیرفعال‌سازی مطمئن هستید؟",
+    "@disarmConfirmMessage":  {
+
+                              },
+    "biometricReasonArm":  "تأیید این دستور",
+    "@biometricReasonArm":  {
+
+                            },
+    "commandCancelled":  "ARB_PLACEHOLDER_TOKEN_1",
+    "@commandCancelled":  {
+
+                          },
+    "recentActivity":  "فعالیت‌های اخیر",
+    "@recentActivity":  {
+
+                        },
+    "noCommandsYet":  "هنوز دستوری ثبت نشده است.",
+    "@noCommandsYet":  {
+
+                       },
+    "lastCommandAt":  "آخرین دستور: {time}",
+    "@lastCommandAt":  {
+                           "placeholders":  {
+                                                " ":  {
+                                                          "type":  "String"
+                                                      }
+                                            }
+                       },
+    "alarmArmed":  "دستگاه فعال شد",
+    "@alarmArmed":  {
+
+                    },
+    "alarmDisarmed":  "دستگاه غیرفعال شد",
+    "@alarmDisarmed":  {
+
+                       },
+    "statusSecuredTitle":  "خانه ایمن است",
+    "@statusSecuredTitle":  {
+
+                            },
+    "statusSecuredSubtitle":  "دستگاه فعال است",
+    "@statusSecuredSubtitle":  {
+
+                               },
+    "statusDisarmedTitle":  "دستگاه غیرفعال",
+    "@statusDisarmedTitle":  {
+
+                             },
+    "statusDisarmedSubtitle":  "دستگاه غیرفعال است",
+    "@statusDisarmedSubtitle":  {
+
+                                },
+    "statusActivatingTitle":  "در حال فعال‌سازی",
+    "@statusActivatingTitle":  {
+
+                               },
+    "@corresponding":  {
+
+                       },
+    "statusDeactivatingTitle":  "در حال غیرفعال‌سازی",
+    "@statusDeactivatingTitle":  {
+
+                                 },
+    "statusSendingTitle":  "در حال ارسال پیامک",
+    "@statusSendingTitle":  {
+
+                            },
+    "statusSendingSubtitle":  "در حال ارسال دستور...",
+    "@statusSendingSubtitle":  {
+
+                               },
+    "statusErrorTitle":  "خطا",
+    "@statusErrorTitle":  {
+
+                          },
+    "statusErrorSubtitle":  "ارسال دستور ناموفق بود",
+    "@statusErrorSubtitle":  {
+
+                             },
+    "statusUnknownTitle":  "وضعیت نامشخص",
+    "@statusUnknownTitle":  {
+
+                            },
+    "statusUnknownSubtitle":  "وضعیت دستگاه نامشخص است",
+    "@statusUnknownSubtitle":  {
+
+                               },
+    "statusSendingSemantic":  "در حال ارسال دستور",
+    "@statusSendingSemantic":  {
+
+                               },
+    "statusUnknownSemantic":  "وضعیت دستگاه نامشخصص است",
+    "@statusUnknownSemantic":  {
+
+                               },
+    "settingsTitle":  "تنظیمات",
+    "@settingsTitle":  {
+
+                       },
+    "securitySection":  "امنیت",
+    "@securitySection":  {
+
+                         },
+    "appearanceSection":  "ظاهر",
+    "@appearanceSection":  {
+
+                           },
+    "@ persistence":  {
+
+                      },
+    "alarmSection":  "دستگاه",
+    "@alarmSection":  {
+
+                      },
+    "applicationSection":  "برنامه",
+    "@applicationSection":  {
+
+                            },
+    "changePin":  "تغییر رمز",
+    "@changePin":  {
+
+                   },
+    "changePattern":  "تغییر الگو",
+    "@changePattern":  {
+
+                       },
+    "fingerprint":  "اثر انگشت",
+    "@fingerprint":  {
+
+                     },
+    "unlockBiometricFirst":  "ابتدا با اثر انگشت باز کنید",
+    "@unlockBiometricFirst":  {
+
+                              },
+    "biometricReasonEnable":  "فعال‌سازی باز کردن با اثر انگشت",
+    "@biometricReasonEnable":  {
+
+                               },
+    "@cor deleted":  {
+
+                     },
+    "confirmActionsBiometric":  "تأیید عملیات‌ها با اثر انگشت",
+    "@confirmActionsBiometric":  {
+
+                                 },
+    "autoLock":  "قفل خودکار",
+    "@autoLock":  {
+
+                  },
+    "testSms":  "تست پیامک",
+    "@testSms":  {
+
+                 },
+    "checking":  "در حال بررسی...",
+    "@checking":  {
+
+                  },
+    "smsSim":  "سیم‌کارت پیامک",
+    "@smsSim":  {
+
+                },
+    "theme":  "پوسته",
+    "@theme":  {
+
+               },
+    "about":  "درباره برنامه",
+    "@about":  {
+
+               },
+    "version":  "نسخه {version}",
+    "@version":  {
+                     "localize":  true,
+                     "placeholders":  {
+                                          "version":  {
+                                                          "type":  "String"
+                                                      }
+                                      }
+                 },
+    "resetApplication":  "بازنشانی برنامه",
+    "@resetApplication":  {
+
+                          },
+    "lightMode":  "حالت روشن",
+    "@lightMode":  {
+
+                   },
+    "darkMode":  "حالت تیره",
+    "@darkMode":  {
+
+                  },
+    "systemDefault":  "پیش‌فرض سیستم",
+    "@systemDefault":  {
+
+                       },
+    "defaultSim":  "سیم‌کارت پیش‌فرض",
+    "@defaultSim":  {
+
+                    },
+    "askSystemDefault":  "پرسیدن از سیستم",
+    "@askSystemDefault":  {
+
+                          },
+    "simCard":  "سیم‌کارت {id}",
+    "@simCard":  {
+                     "placeholders":  {
+                                          "id":  {
+                                                     "type":  "int"
+                                                 }
+                                      }
+                 },
+    "insertSim":  "لطفاً یک سیم‌کارت قرار دهید.",
+    "@insertSim":  {
+
+                   },
+    "checkSimCard":  "سیم‌کارت خود را بررسی کنید",
+    "@checkSimCard":  {
+
+                      },
+    "readyToSend":  "آماده ارسال دستورات.",
+    "@readyToSend":  {
+
+                     },
+    "resetConfirmTitle":  "بازنشانی برنامه؟",
+    "@resetConfirmTitle":  {
+
+                           },
+    "resetConfirmMessage":  "این کار شماره دستگاه، قفل و تاریخچه روی این گوشی را پاک می‌کند.",
+    "@resetConfirmMessage":  {
+
+                             },
+    "language":  "زبان",
+    "@language":  {
+
+                  },
+    "languageEnglish":  "English",
+    "@languageEnglish":  {
+
+                         },
+    "@ corruption":  {
+
+                     },
+    "languagePersian":  "فارسی",
+    "@languagePersian Persian":  {
+
+                                 },
+    "themeAndLanguage":  "پوسته و زبان",
+    "@themeAndLanguage":  {
+
+                          },
+    "confirmIdentity":  "هویت خود را تأیید کنید",
+    "@confirmIdentity":  {
+
+                         },
+    "chooseNewPin":  "یک رمز جدید انتخاب کنید",
+    "@chooseNewPin":  {
+
+                      },
+    "drawNewPattern":  "یک الگوی جدید بکشید",
+    "confirmNewPin":  "رمز جدید را تأیید کنید",
+    "@confirmNewPin":  {
+
+                       },
+    "confirmNewPattern":  "الگوی جدید را تأیید کنید",
+    "@confirmNewPattern":  {
+
+                           },
+    "savePin":  "ذخیره رمز AppLocalizations",
+    "@savePin":  {
+
+                 },
+    "noMatch":  "همخوانی نداشت. دوباره امتحان کنید.",
+    "@noMatch":  {
+
+                 },
+    "pinsNoMatch":  "این رمزها همخوانی ندارند.",
+    "@pinsNoMatch":  {
+
+                     },
+    "patternsNoMatch":  "این الگوها همخوانی ندارند.",
+    "@patternsNoMatch":  {
+
+                         },
+    "patternTooShort":  "حداقل ۴ نقطه را به هم وصل کنید.",
+    "@patternTooShort":  {
+
+                         },
+    "changePhoneAuthReason":  "برای تغییر شماره دستگاه تأیید لازم است",
+    "@changePhoneAuthReason":  {
+
+                               },
+    "changePhoneGateMessage":  "تغییر شماره دستگاه نیازمند تأیید هویت است.",
+    "@changePhoneGateMessage":  {
+
+                                },
+    "useFingerprint":  "استفاده از اثر انگشت",
+    "@useFingerprint":  {
+
+                        },
+    "changeAlarmPhone":  "تغییر شماره تلفن دستگاه",
+    "@changeAlarmPhone":  {
+
+                          },
+    "useSimCardNumber":  "از شماره سیم‌کارت داخل دستگاه استفاده کنید.",
+    "@useSimCardNumber":  {
+
+                          },
+    "saveNumber":  "ذخیره شماره",
+    "@saveNumber":  {
+
+                    },
+    "aboutTitle":  "درباره برنامه",
+    "@aboutTitle":  {
+
+                    },
+    "privacyTitle":  "اطلاعات حریم خصوصی",
+    "@privacyTitle":  {
+
+                      },
+    "privacyBody":  "SecureHome کاملاً روی همین گوشی کار می‌کند. هیچ حساب کاربری نمی‌سازد و با هیچ سروری ارتباط برقرار نمی‌کند. دستورات به‌صورت پیامک به شماره‌ای که ذخیره کرده‌اید ارسال می‌شوند. رمز و الگوی شما فقط به‌صورت درهم‌سازی یک‌طرفه در فضای امن ذخیره می‌شوند.",
+    "@privacyBody":  {
+
+                     },
+    "historyTitle":  "تاریخچه",
+    "@historyTitle":  {
+
+                      },
+    "clearHistoryTitle":  "پاک کردن تاریخچه؟",
+    "@clearHistoryTitle":  {
+
+                           },
+    "clearHistoryMessage":  "این کار فقط رکوردهای محلی دستورات را پاک می‌کند.",
+    "@clearHistoryMessage":  {
+
+                             },
+    "lockTitle":  "باز کردن SecureHome",
+    "@lockTitle":  {
+
+                   },
+    "lockBiometricHint":  "از اثر انگشت خود استفاده کنید",
+    "@lockBiometricHint":  {
+
+                           },
+    "lockPinHint":  "رمز خود را وارد کنید",
+    "@lockPinHome":  {
+
+                     },
+    "lockPatternHint":  "الگوی خود را بکشید",
+    "@lockPatternHint":  {
+
+                         },
+    "usePin":  "استفاده از رمز",
+    "@usePin":  {
+
+                },
+    "usePattern":  "استفاده از الگو",
+    "@usePattern":  {
+
+                    },
+    "tooManyAttempts":  "تلاش‌های زیادی انجام شد. {seconds} ثانیه دیگر امتحان کنید.",
+    "@tooManyAttempts":  {
+                             "placeholders":  {
+                                                  "seconds":  {
+                                                                  "type":  "int"
+                                                              }
+                                              }
+                         },
+    "createPinTitle":  "یک رمز انتخاب کنید",
+    "@createPinTitle":  {
+
+                        },
+    "confirmPinTitle":  "رمز خود را تأیید کنید",
+    "@confirmPinTitle":  {
+
+                         },
+    "pinSubtitle":  "۴ تا ۶ رقم. این رمز SecureHome را قفل نگه می‌دارد.",
+    "@pinSubtitle":  {
+
+                     },
+    "drawPatternTitle":  "یک الگوی جدید بکشید",
+    "@drawPatternTitle":  {
+
+                          },
+    "confirmPatternTitle":  "الگوی خود را تأیید کنید",
+    "@confirmPatternTitle":  {
+
+                             },
+    "numericPin":  "رمز عددی",
+    "@numericPin":  {
+
+                    },
+    "numericPinDesc":  "یک کد ۴ تا ۶ رقمی",
+    "@numericPinDesc":  {
+
+                        },
+    "patternLock":  "قفل الگو",
+    "@patternLock":  {
+
+                     },
+    "connectFourDots":  "حداقل ۴ نقطه را به هم وصل کنید",
+    "@connectFourDots":  {
+
+                         },
+    "biometricNotAvailable":  "روی این گوشی در دسترس نیست",
+    "@biometricNotAvailable":  {
+
+                               },
+    "lockMethodsTitle":  "قفل کردن SecureHome",
+    "@lockMethodsTitle":  {
+
+                          },
+    "lockMethodsBody":  "نحوه باز کردن برنامه را انتخاب کنید. رمز یا الگو الزامی است.",
+    "@lockMethodsBody":  {
+
+                         },
+    "biometricStepTitle":  "استفاده از اثر انگشت",
+    "@biometricStepTitle":  {
+
+                            },
+    "biometricStepBody":  "با اثر انگشتی که روی همین گوشی ثبت شده، سریع‌تر وارد شوید.",
+    "@ARB_PLACEHOLDER_TOKEN_2":  {
+
+                                 },
+    "biometricStepBodyUnavailable":  "اثر انگشت روی این گوشی در دسترس نیست.",
+    "@biometricStepBodyUnavailable":  {
+
+                                      },
+    "enableFingerprint":  "فعال‌سازی اثر انگشت",
+    "@enableFingerprint":  {
+
+                           },
+    "biometricNotVerified":  "اثر انگشت تأیید نشد.",
+    "@biometricNotVerified":  {
+
+                              },
+    "allowSmsTitle":  "اجازه پیامک",
+    "@allowSmsTitle":  {
+
+                       },
+    "allowSmsBody":  "SecureHome برای ارسال دستورات به دستگاه به دسترسی پیامک نیاز دارد.",
+    "@allowSmsBody":  {
+
+                      },
+    "allowSmsInfo":  "دستورات روی همین گوشی می‌مانند و چیزی به سرور ارسال نمی‌شود.",
+    "@allowSmsInfo":  {
+
+                      },
+    "openAndroidSettings":  "باز کردن تنظیمات اندروید",
+    "@openAndroidSettings":  {
+
+                             },
+    "readyHeadline":  "دستگاه شما آماده است.",
+    "@readyHeadline":  {
+
+                       },
+    "readyBody":  "دستورات ارسال خواهند شد به",
+    "@readyBody":  {
+
+                   },
+    "chooseBackupLock":  "یک رمز یا الگو به‌عنوان قفل پشتیبان انتخاب کنید.",
+    "@chooseBackupLock":  {
+
+                          },
+    "choosePinLength":  "یک رمز ۴ تا ۶ رقمی انتخاب کنید.",
+    "@choosePinLength":  {
+
+                         },
+    "sendingCommand":  "در حال ارسال دستور...",
+    "@sendingCommand":  {
+
+                        },
+    "activationSent":  "دستور فعال‌سازی ارسال شد.",
+    "@activationSent":  {
+
+                        },
+    "deactivationSent":  "دستور غیرفعال‌سازی ارسال شد.",
+    "@deactivationSent":  {
+
+                          },
+    "commandSent":  "دستور ارسال شد",
+    "@commandSent":  {
+
+                     },
+    "pleaseTryAgain":  "لطفاً دوباره امتحان کنید.",
+    "@pleaseTryAgain":  {
+
+                        },
+    "couldNotSendCommand":  "ارسال دستور ممکن نشد.",
+    "@couldNotSendCommand":  {
+
+                             },
+    "simPermissionNeeded":  "برای انتخاب سیم‌کارت به دسترسی تلفن نیاز است.",
+    "@simPermissionNeeded":  {
+
+                             },
+    "biometricReasonUnlock":  "باز کردن SecureHome",
+    "@biometricReasonUnlock":  {
+
+                               },
+    "today":  "امروز",
+    "@today":  {
+
+               },
+    "yesterday":  "دیروز",
+    "@yesterday":  {
+
+                   },
+    "immediately":  "بلافاصله",
+    "@immediately":  {
+
+                     },
+    "seconds":  "{count} ثانیه",
+    "@seconds":  {
+                     " locales":  {
+                                      "count":  {
+                                                    "type":  "int"
+                                                }
+                                  }
+                 },
+    "oneMinute":  "۱ دقیقه",
+    "@oneMinute":  {
+
+                   },
+    "fiveMinutes":  "۵ دقیقه",
+    "@fiveMinutes":  {
+
+                     },
+    "backspace":  "پاک‌کن",
+    "@backspace":  {
+
+                   }
+}
