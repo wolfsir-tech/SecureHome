@@ -45,6 +45,10 @@ class SettingsNotifier extends Notifier<AppSettings> {
     await _persist(state.copyWith(themeMode: mode));
   }
 
+  Future<void> setLocale(AppLocale locale) async {
+    await _persist(state.copyWith(locale: locale));
+  }
+
   Future<void> setAutoLock(Duration duration) async {
     await _persist(state.copyWith(autoLockTimeout: duration));
   }

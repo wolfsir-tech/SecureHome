@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/l10n/l10n.dart';
 
 class ShellScreen extends StatelessWidget {
   const ShellScreen({super.key, required this.navigationShell});
@@ -10,6 +11,7 @@ class ShellScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: Container(
@@ -25,21 +27,21 @@ class ShellScreen extends StatelessWidget {
             index,
             initialLocation: index == navigationShell.currentIndex,
           ),
-          destinations: const [
+          destinations: [
             NavigationDestination(
-              icon: Icon(Icons.shield_outlined),
-              selectedIcon: Icon(Icons.shield_rounded),
-              label: 'Home',
+              icon: const Icon(Icons.shield_outlined),
+              selectedIcon: const Icon(Icons.shield_rounded),
+              label: l10n.navHome,
             ),
             NavigationDestination(
-              icon: Icon(Icons.history_rounded),
-              selectedIcon: Icon(Icons.history_rounded),
-              label: 'History',
+              icon: const Icon(Icons.history_rounded),
+              selectedIcon: const Icon(Icons.history_rounded),
+              label: l10n.navHistory,
             ),
             NavigationDestination(
-              icon: Icon(Icons.settings_outlined),
-              selectedIcon: Icon(Icons.settings_rounded),
-              label: 'Settings',
+              icon: const Icon(Icons.settings_outlined),
+              selectedIcon: const Icon(Icons.settings_rounded),
+              label: l10n.navSettings,
             ),
           ],
         ),

@@ -6,6 +6,8 @@ import 'package:secure_home/core/constants/app_constants.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
 import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/auth_method.dart';
+import 'package:secure_home/l10n/generated/app_localizations.dart';
+import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/providers/providers.dart';
 import 'package:secure_home/presentation/providers/settings_provider.dart';
 import 'package:secure_home/presentation/widgets/pin_keypad.dart';
@@ -35,7 +37,7 @@ class _ChangePhoneScreenState extends ConsumerState<ChangePhoneScreen> {
     final settings = ref.read(settingsProvider);
     if (!settings.biometricEnabled) return;
     final result = await ref.read(authenticationServiceProvider).authenticateBiometric(
-          reason: 'Confirm to change the alarm number',
+          reason: context.l10n.changePhoneAuthReason,
         );
     if (result == UnlockResult.success && mounted) {
       setState(() => _unlocked = true);
@@ -51,23 +53,24 @@ class _ChangePhoneScreenState extends ConsumerState<ChangePhoneScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Alarm phone number')),
+      appBar: AppBar(title: Text(l10n.alarmPhoneLabel)),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-        child: _unlocked ? _editor(colors) : _gate(colors),
+        child: _unlocked ? _editor(colors, l10n) : _gate(colors, l10n),
       ),
     );
   }
 
-  Widget _gate(AppColors colors) {
+  Widget _gate(AppColors colors, AppLocalizations l10n) {
     final settings = ref.watch(settingsProvider);
     return Column(
       children: [
-        Text('Confirm it is you', style: Theme.of(context).textTheme.titleLarge),
+        Text(l10n.confirmIdentity, style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 8),
         Text(
-          'Changing the alarm number requires authentication.',
+          l10n.changePhoneGateMessage,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.textMuted),
         ),
@@ -87,7 +90,7 @@ class _ChangePhoneScreenState extends ConsumerState<ChangePhoneScreen> {
                   setState(() => _unlocked = true);
                 } else if (_pin.length >= AppConstants.pinMaxLength) {
                   setState(() {
-                    _error = 'That did not match. Try again.';
+                    _error = l10n.noMatch;
                     _pin = '';
                   });
                 }
@@ -100,20 +103,20 @@ class _ChangePhoneScreenState extends ConsumerState<ChangePhoneScreen> {
             onBiometric: settings.biometricEnabled ? _tryBiometric : null,
           )
         else
-          PrimaryButton(label: 'Use fingerprint', onPressed: _tryBiometric),
+          PrimaryButton(label: l10n.useFingerprint, onPressed: _tryBiometric),
         const Spacer(),
       ],
     );
   }
 
-  Widget _editor(AppColors colors) {
+  Widget _editor(AppColors colors, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Change alarm phone number', style: Theme.of(context).textTheme.headlineMedium),
+        Text(l10n.changeAlarmPhone, style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 8),
         Text(
-          'Use the SIM card number inside the alarm.',
+          l10n.useSimCardNumber,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted),
         ),
         const SizedBox(height: 24),
@@ -121,15 +124,15 @@ class _ChangePhoneScreenState extends ConsumerState<ChangePhoneScreen> {
           controller: _phone,
           keyboardType: TextInputType.phone,
           inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d+\s-]'))],
-          decoration: const InputDecoration(labelText: 'Alarm phone number'),
+          decoration: InputDecoration(labelText: l10n.alarmPhoneLabel),
         ),
         const Spacer(),
         PrimaryButton(
-          label: 'Save number',
+          label: l10n.saveNumber,
           onPressed: () async {
             final phone = PhoneUtils.normalize(_phone.text);
             if (phone == null) {
-              setState(() => _error = 'The alarm phone number is invalid.');
+              setState(() => _error = l10n.invalidAlarmPhone);
               return;
             }
             await ref.read(settingsProvider.notifier).setPhone(phone);

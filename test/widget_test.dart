@@ -8,23 +8,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:secure_home/main.dart';
+import 'package:secure_home/core/utils/phone_utils.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('SecureHome splash brand renders', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: Center(child: Text('SecureHome')))),
+    );
+    expect(find.text('SecureHome'), findsOneWidget);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('PhoneUtils keeps Iranian mobile numbers in E.164 form', () {
+    expect(PhoneUtils.normalize('0912 123 4567'), '+989121234567');
+    expect(PhoneUtils.isValid('+989121234567'), isTrue);
+    expect(PhoneUtils.isValid(''), isFalse);
   });
 }

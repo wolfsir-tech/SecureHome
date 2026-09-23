@@ -9,6 +9,7 @@ class StorageKeys {
   static const String patternEnabled = 'pattern_enabled';
   static const String onboardingComplete = 'onboarding_complete';
   static const String themeMode = 'theme_mode';
+  static const String locale = 'app_locale';
   static const String autoLockTimeoutMs = 'auto_lock_timeout_ms';
   static const String smsSubscriptionId = 'sms_subscription_id';
   static const String confirmWithBiometrics = 'confirm_with_biometrics';

@@ -15,6 +15,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     final onboarding = await _storage.read(StorageKeys.onboardingComplete);
     final phone = await _storage.read(StorageKeys.alarmPhone);
     final theme = await _storage.read(StorageKeys.themeMode);
+    final locale = await _storage.read(StorageKeys.locale);
     final timeout = await _storage.read(StorageKeys.autoLockTimeoutMs);
     final sub = await _storage.read(StorageKeys.smsSubscriptionId);
     final biometric = await _storage.read(StorageKeys.biometricEnabled);
@@ -28,6 +29,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       onboardingComplete: onboarding == 'true',
       alarmPhoneE164: phone,
       themeMode: _themeFrom(theme),
+      locale: AppLocale.fromCode(locale),
       autoLockTimeout: Duration(milliseconds: int.tryParse(timeout ?? '') ?? 0),
       smsSubscriptionId: int.tryParse(sub ?? ''),
       biometricEnabled: biometric == 'true',
@@ -47,6 +49,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     );
     await _storage.write(StorageKeys.alarmPhone, settings.alarmPhoneE164);
     await _storage.write(StorageKeys.themeMode, settings.themeMode.name);
+    await _storage.write(StorageKeys.locale, settings.locale.code);
     await _storage.write(
       StorageKeys.autoLockTimeoutMs,
       settings.autoLockTimeout.inMilliseconds.toString(),

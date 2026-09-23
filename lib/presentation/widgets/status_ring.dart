@@ -187,7 +187,7 @@ class _RingPainter extends CustomPainter {
       ..strokeWidth = 10
       ..strokeCap = StrokeCap.round;
 
-    final rect = Rect.fromCircle(circle: center, radius: radius);
+    final rect = Rect.fromCircle(center: center, radius: radius);
     if (progress != null) {
       canvas.drawArc(rect, -math.pi / 2, math.pi * 2 * progress!, false, arcPaint);
     } else {

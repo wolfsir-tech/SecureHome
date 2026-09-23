@@ -7,6 +7,7 @@ import 'package:secure_home/core/constants/app_constants.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
 import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/auth_method.dart';
+import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/providers/app_lock_provider.dart';
 import 'package:secure_home/presentation/providers/providers.dart';
 import 'package:secure_home/presentation/providers/settings_provider.dart';
@@ -72,6 +73,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _next() async {
+    final l10n = context.l10n;
     setState(() => _error = null);
     switch (_step) {
       case _Step.welcome:
@@ -79,19 +81,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       case _Step.phone:
         final phone = PhoneUtils.normalize(_phone.text);
         if (phone == null) {
-          _fail('The alarm phone number is invalid.');
+          _fail(l10n.invalidAlarmPhone);
           return;
         }
         setState(() => _step = _Step.methods);
       case _Step.methods:
         if (!_wantPin && !_wantPattern) {
-          _fail('Choose a PIN or a pattern as a backup lock.');
+          _fail(l10n.chooseBackupLock);
           return;
         }
         setState(() => _step = _wantPin ? _Step.pin : _Step.pattern);
       case _Step.pin:
         if (_pinDraft.length < AppConstants.pinMinLength) {
-          _fail('Choose a 4 to 6 digit PIN.');
+          _fail(l10n.choosePinLength);
           return;
         }
         setState(() {
@@ -102,7 +104,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       case _Step.pinConfirm:
         if (_pinDraft != _pin) {
           _pinDraft = '';
-          _fail('Those PINs did not match.');
+          _fail(l10n.pinsNoMatch);
           return;
         }
         await ref.read(authenticationServiceProvider).setPin(_pin);
@@ -194,19 +196,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _step != _Step.patternConfirm;
 
   String get _cta {
+    final l10n = context.l10n;
     switch (_step) {
       case _Step.welcome:
-        return 'Get started';
+        return l10n.getStarted;
       case _Step.ready:
-        return 'Enter SecureHome';
+        return l10n.enterApp;
       case _Step.permission:
-        return 'Continue';
+        return l10n.continueButton;
       default:
-        return 'Continue';
+        return l10n.continueButton;
     }
   }
 
   Widget _body(AppColors colors) {
+    final l10n = context.l10n;
     switch (_step) {
       case _Step.welcome:
         return _Welcome(colors: colors);
@@ -225,8 +229,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       case _Step.pin:
       case _Step.pinConfirm:
         return _PinStep(
-          title: _step == _Step.pin ? 'Create a PIN' : 'Confirm your PIN',
-          subtitle: '4 to 6 digits. This keeps SecureHome locked.',
+          title: _step == _Step.pin ? l10n.createPinTitle : l10n.confirmPinTitle,
+          subtitle: l10n.pinSubtitle,
+          cta: l10n.continueButton,
           length: _pinDraft.length,
           onDigit: (d) {
             if (_pinDraft.length >= AppConstants.pinMaxLength) return;
@@ -247,13 +252,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       case _Step.patternConfirm:
         return _PatternStep(
           key: ValueKey(_step),
-          title: _step == _Step.pattern ? 'Draw a pattern' : 'Confirm your pattern',
+          title: _step == _Step.pattern ? l10n.drawPatternTitle : l10n.confirmPatternTitle,
           error: _error != null,
           patternKey: _patternKey,
           onComplete: (pattern) async {
             if (pattern.length < AppConstants.patternMinLength) {
               _patternKey.currentState?.reset();
-              _fail('Connect at least 4 dots.');
+              _fail(l10n.patternTooShort);
               return;
             }
             if (_step == _Step.pattern) {
@@ -263,7 +268,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             }
             if (pattern.join() != _pattern.join()) {
               _patternKey.currentState?.reset();
-              _fail('Those patterns did not match.');
+              _fail(l10n.patternsNoMatch);
               return;
             }
             await ref.read(authenticationServiceProvider).setPattern(pattern);
@@ -277,7 +282,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           available: _biometricsAvailable,
           onEnable: () async {
             final result = await ref.read(authenticationServiceProvider).authenticateBiometric(
-                  reason: 'Enable fingerprint unlock',
+                  reason: l10n.biometricReasonEnable,
                 );
             if (result == UnlockResult.success) {
               setState(() {
@@ -285,7 +290,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 _step = _Step.permission;
               });
             } else {
-              _fail('Fingerprint was not verified.');
+              _fail(l10n.biometricNotVerified);
             }
           },
           onSkip: () => setState(() {
@@ -356,15 +361,16 @@ class _Welcome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const BrandMark(size: 72),
         const SizedBox(height: 28),
-        Text('Protect your home. Simply.', style: Theme.of(context).textTheme.displayMedium),
+        Text(l10n.welcomeHeadline, style: Theme.of(context).textTheme.displayMedium),
         const SizedBox(height: 14),
         Text(
-          'SecureHome sends SMS commands to your GSM alarm. No cloud. No account. Just this device and your alarm SIM.',
+          l10n.welcomeBody,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted, height: 1.45),
         ),
       ],
@@ -380,13 +386,14 @@ class _PhoneStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Alarm phone number', style: Theme.of(context).textTheme.headlineLarge),
+        Text(l10n.alarmPhoneLabel, style: Theme.of(context).textTheme.headlineLarge),
         const SizedBox(height: 10),
         Text(
-          'Enter the SIM card number inside your alarm system.',
+          l10n.alarmPhoneHint,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted),
         ),
         const SizedBox(height: 28),
@@ -398,9 +405,9 @@ class _PhoneStep extends StatelessWidget {
             FilteringTextInputFormatter.allow(RegExp(r'[\d+\s-]')),
           ],
           style: Theme.of(context).textTheme.headlineMedium,
-          decoration: const InputDecoration(
-            hintText: '+98 912 123 4567',
-            labelText: 'Alarm phone number',
+          decoration: InputDecoration(
+            hintText: l10n.alarmPhoneExample,
+            labelText: l10n.alarmPhoneLabel,
           ),
         ),
       ],
@@ -429,33 +436,34 @@ class _MethodsStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return ListView(
       children: [
-        Text('Lock SecureHome', style: Theme.of(context).textTheme.headlineLarge),
+        Text(l10n.lockMethodsTitle, style: Theme.of(context).textTheme.headlineLarge),
         const SizedBox(height: 10),
         Text(
-          'Choose how you unlock the app. A PIN or pattern is required.',
+          l10n.lockMethodsBody,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: context.colors.textMuted),
         ),
         const SizedBox(height: 20),
         _MethodTile(
           icon: Icons.pin_rounded,
-          title: 'Numeric PIN',
-          subtitle: 'A 4 to 6 digit code',
+          title: l10n.numericPin,
+          subtitle: l10n.numericPinDesc,
           value: pin,
           onChanged: onPin,
         ),
         _MethodTile(
           icon: Icons.pattern_rounded,
-          title: 'Pattern lock',
-          subtitle: 'Connect at least 4 dots',
+          title: l10n.patternLock,
+          subtitle: l10n.connectFourDots,
           value: pattern,
           onChanged: onPattern,
         ),
         _MethodTile(
           icon: Icons.fingerprint_rounded,
-          title: 'Fingerprint',
-          subtitle: biometricAvailable ? 'Unlock with biometrics first' : 'Not available on this device',
+          title: l10n.fingerprint,
+          subtitle: biometricAvailable ? l10n.unlockBiometricFirst : l10n.biometricNotAvailable,
           value: biometric && biometricAvailable,
           onChanged: biometricAvailable ? onBiometric : null,
         ),
@@ -505,6 +513,7 @@ class _PinStep extends StatelessWidget {
   const _PinStep({
     required this.title,
     required this.subtitle,
+    required this.cta,
     required this.length,
     required this.onDigit,
     required this.onBackspace,
@@ -513,6 +522,7 @@ class _PinStep extends StatelessWidget {
 
   final String title;
   final String subtitle;
+  final String cta;
   final int length;
   final ValueChanged<String> onDigit;
   final VoidCallback onBackspace;
@@ -533,7 +543,7 @@ class _PinStep extends StatelessWidget {
           onBackspace: onBackspace,
         ),
         const Spacer(),
-        PrimaryButton(label: 'Continue', onPressed: onContinue),
+        PrimaryButton(label: cta, onPressed: onContinue),
       ],
     );
   }
@@ -560,7 +570,7 @@ class _PatternStep extends StatelessWidget {
         Text(title, style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 8),
         Text(
-          'Connect at least 4 dots.',
+          context.l10n.connectFourDots,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
         ),
         const Spacer(),
@@ -585,24 +595,23 @@ class _BiometricStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
     return Column(
       children: [
         const Spacer(),
         Icon(Icons.fingerprint_rounded, size: 88, color: colors.accent),
         const SizedBox(height: 20),
-        Text('Use fingerprint', style: Theme.of(context).textTheme.headlineMedium),
+        Text(l10n.biometricStepTitle, style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 10),
         Text(
-          available
-              ? 'Unlock SecureHome faster with the fingerprint already on this device.'
-              : 'Fingerprint is not available on this device.',
+          available ? l10n.biometricStepBody : l10n.biometricStepBodyUnavailable,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted),
         ),
         const Spacer(),
-        PrimaryButton(label: 'Enable fingerprint', onPressed: available ? onEnable : null),
+        PrimaryButton(label: l10n.enableFingerprint, onPressed: available ? onEnable : null),
         const SizedBox(height: 10),
-        GhostButton(label: 'Not now', onPressed: onSkip),
+        GhostButton(label: l10n.notNow, onPressed: onSkip),
       ],
     );
   }
@@ -624,14 +633,15 @@ class _PermissionStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
     final deniedForever = status?.isPermanentlyDenied ?? false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Allow SMS', style: Theme.of(context).textTheme.headlineLarge),
+        Text(l10n.allowSmsTitle, style: Theme.of(context).textTheme.headlineLarge),
         const SizedBox(height: 12),
         Text(
-          'SecureHome needs SMS permission to send commands to your alarm.',
+          l10n.allowSmsBody,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted, height: 1.45),
         ),
         const SizedBox(height: 24),
@@ -648,7 +658,7 @@ class _PermissionStep extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Commands stay on this phone. Nothing is sent to a server.',
+                  l10n.allowSmsInfo,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
@@ -657,11 +667,11 @@ class _PermissionStep extends StatelessWidget {
         ),
         const Spacer(),
         PrimaryButton(
-          label: deniedForever ? 'Open Android Settings' : 'Allow SMS',
+          label: deniedForever ? l10n.openAndroidSettings : l10n.allowSmsTitle,
           onPressed: deniedForever ? onSettings : onRequest,
         ),
         const SizedBox(height: 10),
-        GhostButton(label: 'Skip for now', onPressed: onSkip),
+        GhostButton(label: l10n.skipForNow, onPressed: onSkip),
       ],
     );
   }
@@ -675,15 +685,16 @@ class _ReadyStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
     return Column(
       children: [
         const Spacer(),
         Icon(Icons.check_circle_rounded, size: 72, color: colors.secured),
         const SizedBox(height: 18),
-        Text('Your alarm is ready.', style: Theme.of(context).textTheme.headlineLarge),
+        Text(l10n.readyHeadline, style: Theme.of(context).textTheme.headlineLarge),
         const SizedBox(height: 12),
         Text(
-          'Commands will be sent to',
+          l10n.readyBody,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted),
         ),
         const SizedBox(height: 6),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
 import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/alarm_state.dart';
+import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/providers/alarm_provider.dart';
 import 'package:secure_home/presentation/widgets/primary_button.dart';
 
@@ -39,10 +40,10 @@ class SmsFlowDialog extends ConsumerWidget {
     });
 
     final title = busy
-        ? 'Sending command...'
+        ? context.l10n.sendingCommand
         : error
-            ? 'Unable to send command'
-            : (alarm.message ?? 'Command sent');
+            ? context.l10n.couldNotSendCommand
+            : (alarm.message ?? context.l10n.commandSent);
 
     return Center(
       child: Material(
@@ -92,13 +93,13 @@ class SmsFlowDialog extends ConsumerWidget {
               if (error) ...[
                 const SizedBox(height: 8),
                 Text(
-                  alarm.message ?? 'Please try again.',
+                  alarm.message ?? context.l10n.pleaseTryAgain,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.textMuted),
                 ),
                 const SizedBox(height: 20),
                 PrimaryButton(
-                  label: 'Close',
+                  label: context.l10n.close,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ] else if (success && !busy)

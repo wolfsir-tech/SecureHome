@@ -39,7 +39,7 @@ class AppTheme {
         systemOverlayStyle: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         titleTextStyle: textTheme.titleLarge,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: colors.surface,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -72,7 +72,7 @@ class AppTheme {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: colors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),

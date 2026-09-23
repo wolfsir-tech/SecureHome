@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secure_home/core/constants/app_constants.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
 import 'package:secure_home/domain/entities/auth_method.dart';
+import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/providers/app_lock_provider.dart';
 import 'package:secure_home/presentation/providers/providers.dart';
 import 'package:secure_home/presentation/providers/settings_provider.dart';
@@ -69,24 +70,24 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
   }
 
   Future<void> _handle(UnlockResult result) async {
+    final l10n = context.l10n;
     switch (result) {
       case UnlockResult.success:
         ref.read(appLockProvider.notifier).unlock();
       case UnlockResult.failed:
-        _feedback('That did not match. Try again.');
+        _feedback(l10n.noMatch);
       case UnlockResult.cancelled:
         setState(() => _method = ref.read(settingsProvider).pinEnabled ? AuthMethod.pin : AuthMethod.pattern);
       case UnlockResult.lockedOut:
         final left = ref.read(authenticationServiceProvider).lockoutRemaining;
-        _feedback(
-          'Too many attempts. Try again in ${left?.inSeconds ?? 30}s.',
-        );
+        _feedback(l10n.tooManyAttempts(left?.inSeconds ?? 30));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
     final settings = ref.watch(settingsProvider);
     return Scaffold(
       body: SafeArea(
@@ -96,14 +97,14 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
             children: [
               const BrandMark(size: 72),
               const SizedBox(height: 22),
-              Text('Unlock SecureHome', style: Theme.of(context).textTheme.headlineMedium),
+              Text(l10n.lockTitle, style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 8),
               Text(
                 _method == AuthMethod.biometric
-                    ? 'Use your fingerprint'
+                    ? l10n.lockBiometricHint
                     : _method == AuthMethod.pin
-                        ? 'Enter your PIN'
-                        : 'Draw your pattern',
+                        ? l10n.lockPinHint
+                        : l10n.lockPatternHint,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted),
               ),
               const SizedBox(height: 28),
@@ -179,7 +180,7 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
                         _pin = '';
                         _method = AuthMethod.pin;
                       }),
-                      child: const Text('Use PIN'),
+                      child: Text(l10n.usePin),
                     ),
                   if (settings.patternEnabled && _method != AuthMethod.pattern)
                     TextButton(
@@ -187,7 +188,7 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
                         _error = false;
                         _method = AuthMethod.pattern;
                       }),
-                      child: const Text('Use pattern'),
+                      child: Text(l10n.usePattern),
                     ),
                   if (settings.biometricEnabled && _method != AuthMethod.biometric)
                     TextButton(
@@ -195,7 +196,7 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
                         _biometricTried = false;
                         _tryBiometric();
                       },
-                      child: const Text('Use fingerprint'),
+                      child: Text(l10n.useFingerprint),
                     ),
                 ],
               ),

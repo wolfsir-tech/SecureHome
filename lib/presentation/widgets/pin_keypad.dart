@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:secure_home/core/constants/app_constants.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/l10n/l10n.dart';
 
 class PinKeypad extends StatelessWidget {
   const PinKeypad({
@@ -140,7 +141,8 @@ class _Key extends StatelessWidget {
     final colors = context.colors;
     return Semantics(
       button: true,
-      label: label ?? (icon == Icons.fingerprint_rounded ? 'Fingerprint' : 'Backspace'),
+      label: label ??
+          (icon == Icons.fingerprint_rounded ? context.l10n.fingerprint : context.l10n.backspace),
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),

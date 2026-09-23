@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secure_home/core/constants/app_constants.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/widgets/brand_mark.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -51,7 +52,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 Text(AppConstants.appName, style: Theme.of(context).textTheme.headlineLarge),
                 const SizedBox(height: 8),
                 Text(
-                  'Home security, simply.',
+                  context.l10n.tagline,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.textMuted),
                 ),
               ],

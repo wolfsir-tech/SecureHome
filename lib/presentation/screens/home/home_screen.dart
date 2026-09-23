@@ -6,6 +6,8 @@ import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/alarm_state.dart';
 import 'package:secure_home/domain/entities/auth_method.dart';
 import 'package:secure_home/domain/entities/command_history_item.dart';
+import 'package:secure_home/l10n/generated/app_localizations.dart';
+import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/providers/alarm_provider.dart';
 import 'package:secure_home/presentation/providers/app_lock_provider.dart';
 import 'package:secure_home/presentation/providers/history_provider.dart';
@@ -22,10 +24,11 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final l10n = context.l10n;
     final alarm = ref.watch(alarmProvider);
     final settings = ref.watch(settingsProvider);
     final history = ref.watch(historyProvider).take(3).toList();
-    final copy = _copyFor(alarm.status);
+    final copy = _copyFor(alarm.status, l10n);
 
     return Scaffold(
       body: SafeArea(
@@ -41,7 +44,7 @@ class HomeScreen extends ConsumerWidget {
                       Text('SecureHome', style: Theme.of(context).textTheme.titleLarge),
                       const Spacer(),
                       IconButton(
-                        tooltip: 'Lock',
+                        tooltip: l10n.lockTitle,
                         onPressed: () => ref.read(appLockProvider.notifier).lock(),
                         icon: const Icon(Icons.lock_outline_rounded),
                       ),
@@ -71,26 +74,26 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Alarm phone number',
+                            l10n.alarmPhoneLabel,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 4),
                           Text(
                             settings.alarmPhoneE164 == null
-                                ? 'Not set'
+                                ? l10n.notSet
                                 : PhoneUtils.mask(settings.alarmPhoneE164!),
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           if (settings.lastCommandAt != null) ...[
                             const SizedBox(height: 6),
                             Text(
-                              'Last command ${Formatters.dateTime(settings.lastCommandAt!)}',
+                              l10n.lastCommandAt(Formatters.dateTime(settings.lastCommandAt!)),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                           const SizedBox(height: 28),
                           PrimaryButton(
-                            label: 'ARM ALARM',
+                            label: l10n.armAlarm,
                             icon: Icons.security_rounded,
                             color: colors.disarmed,
                             foreground: Colors.white,
@@ -99,7 +102,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 12),
                           GhostButton(
-                            label: 'DISARM',
+                            label: l10n.disarmAlarm,
                             icon: Icons.lock_open_rounded,
                             color: colors.secured,
                             onPressed: alarm.status.isBusy ? null : () => _disarm(context, ref),
@@ -107,12 +110,12 @@ class HomeScreen extends ConsumerWidget {
                           const SizedBox(height: 28),
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: Text('Recent activity', style: Theme.of(context).textTheme.titleMedium),
+                            child: Text(l10n.recentActivity, style: Theme.of(context).textTheme.titleMedium),
                           ),
                           const SizedBox(height: 10),
                           if (history.isEmpty)
                             Text(
-                              'No commands yet.',
+                              l10n.noCommandsYet,
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.textMuted),
                             )
                           else
@@ -131,11 +134,12 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Future<void> _arm(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
     final ok = await showConfirmSheet(
       context: context,
-      title: 'Activate home alarm?',
-      message: 'An SMS command will be sent to the alarm system.',
-      confirmLabel: 'Activate',
+      title: l10n.armConfirmTitle,
+      message: l10n.armConfirmMessage,
+      confirmLabel: l10n.activate,
       confirmColor: context.colors.disarmed,
       confirmForeground: Colors.white,
     );
@@ -148,11 +152,12 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Future<void> _disarm(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
     final ok = await showConfirmSheet(
       context: context,
-      title: 'Disable home alarm?',
-      message: 'Are you sure you want to send the deactivation command?',
-      confirmLabel: 'Disable Alarm',
+      title: l10n.disarmConfirmTitle,
+      message: l10n.disarmConfirmMessage,
+      confirmLabel: l10n.disableAlarm,
       confirmColor: context.colors.secured,
       confirmForeground: Colors.white,
     );
@@ -168,33 +173,33 @@ class HomeScreen extends ConsumerWidget {
     final settings = ref.read(settingsProvider);
     if (!settings.confirmWithBiometrics || !settings.biometricEnabled) return true;
     final result = await ref.read(authenticationServiceProvider).authenticateBiometric(
-          reason: 'Confirm this alarm command',
+          reason: context.l10n.biometricReasonArm,
         );
     if (result == UnlockResult.success) return true;
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Command cancelled.')),
+        SnackBar(content: Text(context.l10n.commandCancelled)),
       );
     }
     return false;
   }
 
-  _StatusCopy _copyFor(AlarmStatus status) {
+  _StatusCopy _copyFor(AlarmStatus status, AppLocalizations l10n) {
     switch (status) {
       case AlarmStatus.secured:
-        return const _StatusCopy('HOME SECURED', 'Home is secured');
+        return _StatusCopy(l10n.statusSecuredTitle, l10n.statusSecuredSubtitle);
       case AlarmStatus.disarmed:
-        return const _StatusCopy('ALARM DISARMED', 'Alarm is disarmed');
+        return _StatusCopy(l10n.statusDisarmedTitle, l10n.statusDisarmedSubtitle);
       case AlarmStatus.activating:
-        return const _StatusCopy('ACTIVATING', 'Sending command...');
+        return _StatusCopy(l10n.statusActivatingTitle, l10n.statusSendingSubtitle);
       case AlarmStatus.deactivating:
-        return const _StatusCopy('DEACTIVATING', 'Sending command...');
+        return _StatusCopy(l10n.statusDeactivatingTitle, l10n.statusSendingSubtitle);
       case AlarmStatus.sending:
-        return const _StatusCopy('SENDING SMS', 'Sending command...');
+        return _StatusCopy(l10n.statusSendingTitle, l10n.statusSendingSubtitle);
       case AlarmStatus.error:
-        return const _StatusCopy('ERROR', 'Unable to send command');
+        return _StatusCopy(l10n.statusErrorTitle, l10n.statusErrorSubtitle);
       case AlarmStatus.unknown:
-        return const _StatusCopy('STATUS UNKNOWN', 'Send a command to update status');
+        return _StatusCopy(l10n.statusUnknownTitle, l10n.statusUnknownSubtitle);
     }
   }
 }
@@ -228,7 +233,9 @@ class _ActivityTile extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              item.action == HistoryAction.arm ? 'Alarm armed' : 'Alarm disarmed',
+              item.action == HistoryAction.arm
+                  ? context.l10n.alarmArmed
+                  : context.l10n.alarmDisarmed,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),

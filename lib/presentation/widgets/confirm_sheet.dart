@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/widgets/primary_button.dart';
 
 Future<bool> showConfirmSheet({
@@ -47,7 +48,7 @@ Future<bool> showConfirmSheet({
             ),
             const SizedBox(height: 10),
             GhostButton(
-              label: 'Cancel',
+              label: context.l10n.cancel,
               onPressed: () => Navigator.of(context).pop(false),
             ),
           ],

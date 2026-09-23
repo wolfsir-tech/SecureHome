@@ -4,6 +4,7 @@ import 'package:secure_home/core/theme/app_colors.dart';
 import 'package:secure_home/core/utils/formatters.dart';
 import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/command_history_item.dart';
+import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/providers/history_provider.dart';
 import 'package:secure_home/presentation/widgets/app_card.dart';
 
@@ -14,14 +15,15 @@ class HistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final items = ref.watch(historyProvider);
     final colors = context.colors;
+    final l10n = context.l10n;
     final grouped = <String, List<CommandHistoryItem>>{};
     for (final item in items) {
-      grouped.putIfAbsent(Formatters.relativeDay(item.timestamp), () => []).add(item);
+      grouped.putIfAbsent(Formatters.relativeDay(item.timestamp, l10n), () => []).add(item);
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('History'),
+        title: Text(l10n.historyTitle),
         actions: [
           if (items.isNotEmpty)
             TextButton(
@@ -29,24 +31,24 @@ class HistoryScreen extends ConsumerWidget {
                 final ok = await showDialog<bool>(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text('Clear history?'),
-                    content: const Text('This only removes local command records.'),
+                    title: Text(l10n.clearHistoryTitle),
+                    content: Text(l10n.clearHistoryMessage),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Clear')),
+                      TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+                      TextButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.clear)),
                     ],
                   ),
                 );
                 if (ok == true) await ref.read(historyProvider.notifier).clear();
               },
-              child: const Text('Clear'),
+              child: Text(l10n.clear),
             ),
         ],
       ),
       body: items.isEmpty
           ? Center(
               child: Text(
-                'No commands yet.',
+                l10n.noCommandsYet,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted),
               ),
             )
