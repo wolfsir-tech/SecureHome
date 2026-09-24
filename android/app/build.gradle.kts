@@ -47,3 +47,10 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Needed directly by the home-screen widget to read the alarm phone number
+    // from the same EncryptedSharedPreferences store that flutter_secure_storage
+    // writes to (the plugin only exposes it as `implementation`).
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+}

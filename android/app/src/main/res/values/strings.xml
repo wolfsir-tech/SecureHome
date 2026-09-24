@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_title">SecureHome</string>
+    <string name="widget_arm">Arm</string>
+    <string name="widget_disarm">Disarm</string>
+    <string name="widget_status_unknown">Status: Unknown</string>
+    <string name="widget_status_armed">Status: Armed</string>
+    <string name="widget_status_disarmed">Status: Disarmed</string>
+    <string name="widget_icon_desc">SecureHome shield</string>
+    <string name="widget_no_phone">Set the alarm phone number in the app first</string>
+    <string name="widget_no_sms_permission">Grant SMS permission in the app first</string>
+    <string name="widget_sent_arm">Armed</string>
+    <string name="widget_sent_disarm">Disarmed</string>
+    <string name="widget_send_failed">Failed to send</string>
+</resources>

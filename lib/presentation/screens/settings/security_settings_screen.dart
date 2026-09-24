@@ -21,12 +21,18 @@ class SecuritySettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SecuritySettingsScreenState extends ConsumerState<SecuritySettingsScreen> {
-  String _phase = 'auth';
+  static const _phaseAuth = 'auth';
+  static const _phaseCreate = 'create';
+  static const _phaseConfirm = 'confirm';
+
+  String _phase = _phaseAuth;
   String _pin = '';
   String _newPin = '';
   List<int> _pattern = [];
   String? _error;
+  bool _busy = false;
   late String _target;
+  final _patternKey = GlobalKey<PatternLockState>();
 
   @override
   void initState() {
@@ -34,11 +40,94 @@ class _SecuritySettingsScreenState extends ConsumerState<SecuritySettingsScreen>
     _target = widget.focus == 'pattern' ? 'pattern' : 'pin';
   }
 
+  bool get _isPin => _target == 'pin';
+
+  void _fail(String message) {
+    setState(() {
+      _error = message;
+      _busy = false;
+    });
+    _patternKey.currentState?.reset();
+  }
+
+  Future<void> _verifyAndCreate() async {
+    final l10n = context.l10n;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final auth = ref.read(authenticationServiceProvider);
+    final result = _isPin ? await auth.verifyPin(_pin) : await auth.verifyPattern(_pattern);
+    if (!mounted) return;
+    switch (result) {
+      case UnlockResult.success:
+        setState(() {
+          _phase = _phaseCreate;
+          _error = null;
+          _busy = false;
+          _pin = '';
+          _pattern = [];
+        });
+        _patternKey.currentState?.reset();
+      case UnlockResult.failed:
+        _fail(l10n.noMatch);
+        setState(() {
+          _pin = '';
+          _pattern = [];
+        });
+      case UnlockResult.cancelled:
+        setState(() {
+          _error = null;
+          _busy = false;
+        });
+      case UnlockResult.lockedOut:
+        final left = ref.read(authenticationServiceProvider).lockoutRemaining;
+        _fail(l10n.tooManyAttempts(left?.inSeconds ?? AppConstants.lockoutDuration.inSeconds));
+        setState(() {
+          _pin = '';
+          _pattern = [];
+        });
+    }
+  }
+
+  Future<void> _save() async {
+    final l10n = context.l10n;
+    if (_isPin) {
+      if (_pin != _newPin) {
+        _fail(l10n.pinsNoMatch);
+        setState(() {
+          _pin = '';
+        });
+        return;
+      }
+      try {
+        await ref.read(authenticationServiceProvider).setPin(_pin);
+      } catch (_) {
+        _fail(l10n.choosePinLength);
+        return;
+      }
+      await ref.read(settingsProvider.notifier).setPinEnabled(true);
+    } else {
+      if (_pattern.length < AppConstants.patternMinLength) {
+        _fail(l10n.patternTooShort);
+        return;
+      }
+      try {
+        await ref.read(authenticationServiceProvider).setPattern(_pattern);
+      } catch (_) {
+        _fail(l10n.patternTooShort);
+        return;
+      }
+      await ref.read(settingsProvider.notifier).setPatternEnabled(true);
+    }
+    if (mounted) context.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final l10n = context.l10n;
-    final title = _target == 'pattern' ? l10n.changePattern : l10n.changePin;
+    final title = _isPin ? l10n.changePin : l10n.changePattern;
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: Padding(
@@ -46,11 +135,11 @@ class _SecuritySettingsScreenState extends ConsumerState<SecuritySettingsScreen>
         child: Column(
           children: [
             Text(
-              _phase == 'auth'
+              _phase == _phaseAuth
                   ? l10n.confirmIdentity
-                  : _phase == 'create'
-                      ? (_target == 'pin' ? l10n.chooseNewPin : l10n.drawNewPattern)
-                      : (_target == 'pin' ? l10n.confirmNewPin : l10n.confirmNewPattern),
+                  : _phase == _phaseCreate
+                      ? (_isPin ? l10n.chooseNewPin : l10n.drawNewPattern)
+                      : (_isPin ? l10n.confirmNewPin : l10n.confirmNewPattern),
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 20),
@@ -68,104 +157,109 @@ class _SecuritySettingsScreenState extends ConsumerState<SecuritySettingsScreen>
 
   Widget _body() {
     final l10n = context.l10n;
-    if (_target == 'pin') {
+    if (_isPin) {
       return Column(
         children: [
           PinKeypad(
             length: _pin.length,
             maxLength: AppConstants.pinMaxLength,
-            onDigit: (d) async {
+            error: _error != null,
+            onDigit: (d) {
               if (_pin.length >= AppConstants.pinMaxLength) return;
-              setState(() => _pin += d);
-              if (_phase == 'auth' && _pin.length >= AppConstants.pinMinLength) {
-                final result = await ref.read(authenticationServiceProvider).verifyPin(_pin);
-                if (result == UnlockResult.success) {
-                  setState(() {
-                    _phase = 'create';
-                    _pin = '';
-                    _error = null;
-                  });
-                } else if (_pin.length >= AppConstants.pinMaxLength) {
-                  setState(() {
-                    _error = l10n.noMatch;
-                    _pin = '';
-                  });
-                }
-              }
+              setState(() {
+                _pin += d;
+                _error = null;
+              });
             },
             onBackspace: () {
               if (_pin.isEmpty) return;
-              setState(() => _pin = _pin.substring(0, _pin.length - 1));
+              setState(() {
+                _pin = _pin.substring(0, _pin.length - 1);
+                _error = null;
+              });
             },
           ),
           const SizedBox(height: 16),
-          if (_phase != 'auth')
-            PrimaryButton(
-              label: _phase == 'create' ? l10n.continueButton : l10n.savePin,
-              onPressed: _pin.length < AppConstants.pinMinLength
-                  ? null
-                  : () async {
-                      if (_phase == 'create') {
-                        setState(() {
-                          _newPin = _pin;
-                          _pin = '';
-                          _phase = 'confirm';
-                        });
-                        return;
-                      }
-                      if (_pin != _newPin) {
-                        setState(() {
-                          _error = l10n.pinsNoMatch;
-                          _pin = '';
-                        });
-                        return;
-                      }
-                      await ref.read(authenticationServiceProvider).setPin(_pin);
-                      await ref.read(settingsProvider.notifier).setPinEnabled(true);
-                      if (mounted) context.pop();
-                    },
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: PrimaryButton(
+                label: _phase == _phaseAuth
+                    ? l10n.continueButton
+                    : _phase == _phaseCreate
+                        ? l10n.continueButton
+                        : l10n.savePin,
+                loading: _busy,
+                onPressed: _busy || _pin.length < AppConstants.pinMinLength
+                    ? null
+                    : () async {
+                        if (_phase == _phaseAuth) {
+                          await _verifyAndCreate();
+                          return;
+                        }
+                        if (_phase == _phaseCreate) {
+                          setState(() {
+                            _newPin = _pin;
+                            _pin = '';
+                            _phase = _phaseConfirm;
+                            _error = null;
+                          });
+                          return;
+                        }
+                        await _save();
+                      },
+              ),
             ),
+          ),
         ],
       );
     }
 
-    return Center(
-      child: PatternLock(
-        error: _error != null,
-        onComplete: (pattern) async {
-          if (_phase == 'auth') {
-            final result = await ref.read(authenticationServiceProvider).verifyPattern(pattern);
-            if (result == UnlockResult.success) {
-              setState(() {
-                _phase = 'create';
-                _error = null;
-              });
-            } else {
-              setState(() => _error = l10n.noMatch);
-            }
-            return;
-          }
-          if (pattern.length < AppConstants.patternMinLength) {
-            setState(() => _error = l10n.patternTooShort);
-            return;
-          }
-          if (_phase == 'create') {
-            setState(() {
-              _pattern = pattern;
-              _phase = 'confirm';
-              _error = null;
-            });
-            return;
-          }
-          if (pattern.join() != _pattern.join()) {
-            setState(() => _error = l10n.patternsNoMatch);
-            return;
-          }
-          await ref.read(authenticationServiceProvider).setPattern(pattern);
-          await ref.read(settingsProvider.notifier).setPatternEnabled(true);
-          if (mounted) context.pop();
-        },
-      ),
+    return Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: PatternLock(
+              key: _patternKey,
+              error: _error != null,
+              onComplete: (pattern) async {
+                setState(() => _error = null);
+                if (_phase == _phaseAuth) {
+                  _pattern = pattern;
+                  await _verifyAndCreate();
+                  return;
+                }
+                if (pattern.length < AppConstants.patternMinLength) {
+                  _fail(l10n.patternTooShort);
+                  return;
+                }
+                if (_phase == _phaseCreate) {
+                  setState(() {
+                    _pattern = pattern;
+                    _phase = _phaseConfirm;
+                    _error = null;
+                  });
+                  _patternKey.currentState?.reset();
+                  return;
+                }
+                if (pattern.join('-') != _pattern.join('-')) {
+                  _fail(l10n.patternsNoMatch);
+                  return;
+                }
+                await _save();
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            _phase == _phaseCreate ? l10n.drawNewPattern : l10n.confirmNewPattern,
+            style: TextStyle(color: context.colors.textMuted),
+          ),
+        ),
+      ],
     );
   }
 }

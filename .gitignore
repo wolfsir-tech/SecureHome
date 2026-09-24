@@ -28,3 +28,5 @@ android/key.properties
 *.class
 .DS_Store
 create.txt
+app-release.apk
+generate_icons.ps1
