@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:secure_home/core/theme/app_colors.dart';
 
+/// The SecureHome logo. Renders the brand asset on its own background so it
+/// looks the same on the splash, lock, onboarding and about screens.
 class BrandMark extends StatelessWidget {
   const BrandMark({super.key, this.size = 72});
 
@@ -8,19 +9,13 @@ class BrandMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: colors.surfaceHigh,
-        borderRadius: BorderRadius.circular(size * 0.28),
-        border: Border.all(color: colors.border),
-      ),
-      child: Icon(
-        Icons.shield_rounded,
-        color: colors.accent,
-        size: size * 0.52,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size * 0.22),
+      child: Image.asset(
+        'assets/securehome.png',
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
       ),
     );
   }

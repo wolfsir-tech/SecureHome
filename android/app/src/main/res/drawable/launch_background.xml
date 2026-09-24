@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Startup splash: shows the SecureHome shield while the process starts. -->
+<!-- Startup page: logo on its own background colour so the hand-off from the
+     native launch screen to the Flutter splash is invisible. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/white" />
+    <item android:drawable="@color/launch_background" />
     <item>
         <bitmap
             android:gravity="center"

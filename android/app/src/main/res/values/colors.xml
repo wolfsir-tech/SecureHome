@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#0A327B</color>
+    <!-- Matches the logo's own background so the startup page is seamless. -->
+    <color name="ic_launcher_background">#F1F3F5</color>
+    <color name="launch_background">#F1F3F5</color>
 </resources>
