@@ -20,6 +20,7 @@ android/.gradle/
 android/captures/
 android/**/GeneratedPluginRegistrant.java
 android/key.properties
+android/**/*.b64
 **/*.jks
 **/*.keystore
 

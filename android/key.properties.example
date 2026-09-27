@@ -1,0 +1,18 @@
+# Copy this file to android/key.properties and fill in the values for your
+# own release keystore. The real key.properties and the .jks file are
+# git-ignored and must NEVER be committed.
+#
+# Generate a keystore once (keep it safe and back it up):
+#   keytool -genkeypair -v \
+#     -keystore upload-keystore.jks -keyalg RSA -keysize 2048 \
+#     -validity 10950 -alias upload
+#
+# In CI, these values are materialized from GitHub secrets instead:
+#   ANDROID_KEYSTORE_BASE64  base64 of the .jks file
+#   ANDROID_KEYSTORE_PASSWORD  store password
+#   ANDROID_KEY_ALIAS         key alias
+#   ANDROID_KEY_PASSWORD      key password
+storePassword=*****
+keyPassword=*****
+keyAlias=upload
+storeFile=upload-keystore.jks
