@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:secure_home/core/constants/app_constants.dart';
 import 'package:secure_home/core/errors/error_mapper.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/core/theme/app_shadows.dart';
 import 'package:secure_home/core/utils/formatters.dart';
 import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/app_settings.dart';
@@ -164,13 +165,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     Color? color,
     VoidCallback? onTap,
   }) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-      leading: Icon(icon, color: color),
-      title: Text(title, style: TextStyle(color: color)),
-      subtitle: subtitle == null ? null : Text(subtitle),
-      trailing: const Icon(Icons.chevron_right_rounded),
-      onTap: onTap,
+    final colors = context.colors;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.micro),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          border: Border.all(color: colors.border),
+        ),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.micro),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+          tileColor: Colors.transparent,
+          leading: Icon(icon, color: color ?? colors.textSecondary),
+          title: Text(title, style: TextStyle(color: color)),
+          subtitle: subtitle == null ? null : Text(subtitle),
+          trailing: Icon(Icons.chevron_right_rounded, color: colors.textMuted),
+          onTap: onTap,
+        ),
+      ),
     );
   }
 

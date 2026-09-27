@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/core/theme/app_shadows.dart';
 import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/alarm_state.dart';
 import 'package:secure_home/l10n/l10n.dart';
@@ -53,7 +54,9 @@ class SmsFlowDialog extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
           decoration: BoxDecoration(
             color: colors.surface,
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            border: Border.all(color: colors.border),
+            boxShadow: AppShadows.raised(colors),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

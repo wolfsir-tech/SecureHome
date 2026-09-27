@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/core/theme/app_shadows.dart';
 import 'package:secure_home/l10n/l10n.dart';
 import 'package:secure_home/presentation/widgets/primary_button.dart';
 
@@ -14,10 +15,20 @@ Future<bool> showConfirmSheet({
   final result = await showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
+    backgroundColor: context.colors.surface,
+    elevation: 0,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+    ),
     builder: (context) {
       final colors = context.colors;
       return Padding(
-        padding: EdgeInsets.fromLTRB(24, 12, 24, 24 + MediaQuery.paddingOf(context).bottom),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.xl,
+          AppSpacing.sm,
+          AppSpacing.xl,
+          AppSpacing.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,18 +39,18 @@ Future<bool> showConfirmSheet({
                 height: 4,
                 decoration: BoxDecoration(
                   color: colors.border,
-                  borderRadius: BorderRadius.circular(99),
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.xl),
             Text(title, style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 10),
             Text(
               message,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: AppSpacing.xxl),
             PrimaryButton(
               label: confirmLabel,
               color: confirmColor,

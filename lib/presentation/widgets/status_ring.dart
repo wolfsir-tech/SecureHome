@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/core/theme/app_shadows.dart';
 import 'package:secure_home/domain/entities/alarm_state.dart';
 
 class StatusRing extends StatefulWidget {
@@ -58,6 +59,7 @@ class _StatusRingState extends State<StatusRing> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final visual = _visualFor(widget.status, colors);
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
     return Semantics(
       label: visual.semantic,
       child: SizedBox(
@@ -70,13 +72,15 @@ class _StatusRingState extends State<StatusRing> with TickerProviderStateMixin {
               painter: _RingPainter(
                 color: visual.color,
                 track: colors.surfaceHigh,
+                trackDark: colors.shadowDark,
+                trackLight: colors.shadowLight,
                 progress: widget.status.isBusy ? null : visual.progress,
                 spin: _spin.value,
-                pulse: 0.18 + (_pulse.value * 0.12),
+                pulse: reduceMotion ? 0.16 : 0.18 + (_pulse.value * 0.12),
               ),
               child: Center(
                 child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 280),
+                  duration: AppShadows.normal,
                   child: Icon(
                     visual.icon,
                     key: ValueKey(widget.status),
@@ -152,6 +156,8 @@ class _RingPainter extends CustomPainter {
   _RingPainter({
     required this.color,
     required this.track,
+    required this.trackDark,
+    required this.trackLight,
     required this.pulse,
     required this.spin,
     this.progress,
@@ -159,6 +165,8 @@ class _RingPainter extends CustomPainter {
 
   final Color color;
   final Color track;
+  final Color trackDark;
+  final Color trackLight;
   final double pulse;
   final double spin;
   final double? progress;
@@ -167,8 +175,19 @@ class _RingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
     final radius = size.shortestSide / 2 - 10;
+
+    // Recessed track: the ring is pressed into the surface, so its inner edge
+    // is darker at the top-left and lighter at the bottom-right.
     final trackPaint = Paint()
-      ..color = track
+      ..shader = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Color.lerp(track, trackDark, 0.35)!,
+          track,
+          Color.lerp(track, trackLight, 0.45)!,
+        ],
+      ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
       ..strokeWidth = 10
       ..strokeCap = StrokeCap.round;

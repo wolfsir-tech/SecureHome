@@ -108,8 +108,10 @@ class PatternLockState extends State<PatternLock> {
               finger: _finger,
               cells: _cells,
               color: line,
-              muted: colors.border,
+              muted: colors.textMuted,
               fill: colors.surfaceHigh,
+              wellDark: colors.shadowDark,
+              wellLight: colors.shadowLight,
             ),
           ),
         ),
@@ -126,6 +128,8 @@ class _PatternPainter extends CustomPainter {
     required this.color,
     required this.muted,
     required this.fill,
+    required this.wellDark,
+    required this.wellLight,
   });
 
   final List<int> selected;
@@ -134,6 +138,8 @@ class _PatternPainter extends CustomPainter {
   final Color color;
   final Color muted;
   final Color fill;
+  final Color wellDark;
+  final Color wellLight;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -162,16 +168,47 @@ class _PatternPainter extends CustomPainter {
 
     for (var i = 0; i < 9; i++) {
       final active = selected.contains(i);
-      final paint = Paint()
-        ..color = active ? color.withValues(alpha: 0.18) : fill
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(cells[i], 22, paint);
+      final center = cells[i];
+
+      if (!active) {
+        // Recessed well: a soft inner shadow ring, top-left light / bottom-right dark.
+        final wellColors = [
+          Color.lerp(fill, wellDark, 0.55)!,
+          fill,
+          Color.lerp(fill, wellLight, 0.35)!,
+        ];
+        final well = Paint()
+          ..shader = RadialGradient(
+            center: const Alignment(-0.5, -0.5),
+            radius: 0.9,
+            colors: wellColors,
+            stops: const [0.0, 0.65, 1.0],
+          ).createShader(Rect.fromCircle(center: center, radius: 22));
+        canvas.drawCircle(center, 22, well..style = PaintingStyle.fill);
+      } else {
+        final raisedColors = [
+          color.withValues(alpha: 0.30),
+          color.withValues(alpha: 0.10),
+        ];
+        final raised = Paint()
+          ..shader = RadialGradient(
+            center: const Alignment(-0.45, -0.45),
+            radius: 0.85,
+            colors: raisedColors,
+          ).createShader(Rect.fromCircle(center: center, radius: 22));
+        canvas.drawCircle(center, 22, raised..style = PaintingStyle.fill);
+      }
+
       final ring = Paint()
-        ..color = active ? color : muted
+        ..color = active ? color : muted.withValues(alpha: 0.45)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 2;
-      canvas.drawCircle(cells[i], 22, ring);
-      canvas.drawCircle(cells[i], active ? 8 : 5, Paint()..color = active ? color : muted);
+        ..strokeWidth = active ? 2.2 : 1.4;
+      canvas.drawCircle(center, 22, ring);
+      canvas.drawCircle(
+        center,
+        active ? 8 : 5,
+        Paint()..color = active ? color : muted,
+      );
     }
   }
 

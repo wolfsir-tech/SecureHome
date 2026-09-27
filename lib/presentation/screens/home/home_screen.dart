@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/core/theme/app_shadows.dart';
 import 'package:secure_home/core/utils/formatters.dart';
 import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/alarm_state.dart';
@@ -16,6 +17,7 @@ import 'package:secure_home/presentation/providers/settings_provider.dart';
 import 'package:secure_home/presentation/widgets/confirm_sheet.dart';
 import 'package:secure_home/presentation/widgets/primary_button.dart';
 import 'package:secure_home/presentation/widgets/sms_flow_dialog.dart';
+import 'package:secure_home/presentation/widgets/soft_key.dart';
 import 'package:secure_home/presentation/widgets/status_ring.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -43,20 +45,16 @@ class HomeScreen extends ConsumerWidget {
                     children: [
                       Text('SecureHome', style: Theme.of(context).textTheme.titleLarge),
                       const Spacer(),
-                      IconButton(
-                        tooltip: l10n.lockTitle,
-                        onPressed: () => ref.read(appLockProvider.notifier).lock(),
-                        icon: const Icon(Icons.lock_outline_rounded),
-                      ),
+                      _LockButton(),
                     ],
                   ),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          const SizedBox(height: 8),
-                          StatusRing(status: alarm.status, size: ringSize),
-                          const SizedBox(height: 18),
+                          const SizedBox(height: AppSpacing.sm),
+                          _StatusPlinth(size: ringSize, status: alarm.status),
+                          const SizedBox(height: AppSpacing.lg),
                           AnimatedSwitcher(
                             duration: const Duration(milliseconds: 280),
                             child: Text(
@@ -72,18 +70,13 @@ class HomeScreen extends ConsumerWidget {
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.textMuted),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             l10n.alarmPhoneLabel,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            settings.alarmPhoneE164 == null
-                                ? l10n.notSet
-                                : PhoneUtils.mask(settings.alarmPhoneE164!),
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
+                          const SizedBox(height: AppSpacing.micro),
+                          _PhoneChip(value: settings.alarmPhoneE164),
                           if (settings.lastCommandAt != null) ...[
                             const SizedBox(height: 6),
                             Text(
@@ -91,7 +84,7 @@ class HomeScreen extends ConsumerWidget {
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
-                          const SizedBox(height: 28),
+                          const SizedBox(height: AppSpacing.xxxl),
                           PrimaryButton(
                             label: l10n.armAlarm,
                             icon: Icons.security_rounded,
@@ -107,7 +100,7 @@ class HomeScreen extends ConsumerWidget {
                             color: colors.secured,
                             onPressed: alarm.status.isBusy ? null : () => _disarm(context, ref),
                           ),
-                          const SizedBox(height: 28),
+                          const SizedBox(height: AppSpacing.xxxl),
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(l10n.recentActivity, style: Theme.of(context).textTheme.titleMedium),
@@ -208,6 +201,75 @@ class _StatusCopy {
   const _StatusCopy(this.title, this.subtitle);
   final String title;
   final String subtitle;
+}
+
+/// The status ring sits on a raised circular plinth — "every important object
+/// feels physically placed on a soft surface".
+class _StatusPlinth extends StatelessWidget {
+  const _StatusPlinth({required this.size, required this.status});
+
+  final double size;
+  final AlarmStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: colors.surface,
+        border: Border.all(color: colors.border),
+        boxShadow: AppShadows.raised(colors),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(size * 0.06),
+        child: StatusRing(status: status, size: size * 0.88),
+      ),
+    );
+  }
+}
+
+/// Masked alarm phone number shown inside a recessed well.
+class _PhoneChip extends StatelessWidget {
+  const _PhoneChip({required this.value});
+
+  final String? value;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 10),
+      decoration: BoxDecoration(
+        color: colors.surfaceHigh,
+        gradient: AppShadows.insetGradient(colors),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+      ),
+      child: Text(
+        value == null ? l10n.notSet : PhoneUtils.mask(value!),
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: value == null ? colors.textMuted : colors.text,
+            ),
+      ),
+    );
+  }
+}
+
+/// Soft circular lock action in the top bar.
+class _LockButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SoftKey(
+      icon: Icons.lock_outline_rounded,
+      size: AppTarget.min + 8,
+      onTap: () => ref.read(appLockProvider.notifier).lock(),
+      semanticsLabel: context.l10n.lockTitle,
+      color: context.colors.accent,
+    );
+  }
 }
 
 class _ActivityTile extends StatelessWidget {

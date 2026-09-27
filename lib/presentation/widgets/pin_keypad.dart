@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:secure_home/core/constants/app_constants.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/core/theme/app_shadows.dart';
 import 'package:secure_home/l10n/l10n.dart';
+import 'package:secure_home/presentation/widgets/soft_key.dart';
 
 class PinKeypad extends StatelessWidget {
   const PinKeypad({
@@ -34,7 +35,7 @@ class PinKeypad extends StatelessWidget {
           maxLength: maxLength,
           error: error,
           color: error ? colors.disarmed : colors.accent,
-          muted: colors.border,
+          muted: colors.textMuted,
         ),
         const SizedBox(height: 28),
         for (final row in [
@@ -48,8 +49,9 @@ class PinKeypad extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: row
                   .map(
-                    (d) => _Key(
+                    (d) => SoftKey(
                       label: d,
+                      semanticsLabel: d,
                       onTap: () {
                         HapticFeedback.selectionClick();
                         onDigit(d);
@@ -62,23 +64,27 @@ class PinKeypad extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _Key(
+            SoftKey(
               icon: onBiometric == null ? null : Icons.fingerprint_rounded,
               onTap: onBiometric,
+              semanticsLabel: onBiometric == null ? '' : context.l10n.fingerprint,
+              color: onBiometric == null ? colors.textMuted : colors.accent,
             ),
-            _Key(
+            SoftKey(
               label: '0',
+              semanticsLabel: '0',
               onTap: () {
                 HapticFeedback.selectionClick();
                 onDigit('0');
               },
             ),
-            _Key(
+            SoftKey(
               icon: Icons.backspace_outlined,
               onTap: () {
                 HapticFeedback.selectionClick();
                 onBackspace();
               },
+              semanticsLabel: context.l10n.backspace,
             ),
           ],
         ),
@@ -104,7 +110,8 @@ class _Dots extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final count = maxLength.clamp(AppConstants.pinMinLength, AppConstants.pinMaxLength);
+    final colors = context.colors;
+    final count = maxLength.clamp(4, 6);
     return AnimatedPadding(
       duration: const Duration(milliseconds: 80),
       padding: EdgeInsets.only(left: error ? 6 : 0),
@@ -113,56 +120,32 @@ class _Dots extends StatelessWidget {
         children: List.generate(count, (i) {
           final filled = i < length;
           return AnimatedContainer(
-            duration: const Duration(milliseconds: 140),
+            duration: AppShadows.normal,
             margin: const EdgeInsets.symmetric(horizontal: 8),
-            width: 14,
-            height: 14,
+            width: 16,
+            height: 16,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: filled ? color : Colors.transparent,
-              border: Border.all(color: filled ? color : muted, width: 1.6),
+              // Unfilled dots sit in a recessed well; filled dots are solid.
+              color: filled ? color : colors.surfaceHigh,
+              border: Border.all(color: filled ? color : colors.border, width: 1.4),
+              boxShadow: filled
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: colors.shadowDark.withValues(alpha: 0.5),
+                        offset: const Offset(2, 2),
+                        blurRadius: 4,
+                      ),
+                      BoxShadow(
+                        color: colors.shadowLight.withValues(alpha: 0.6),
+                        offset: const Offset(-2, -2),
+                        blurRadius: 4,
+                      ),
+                    ],
             ),
           );
         }),
-      ),
-    );
-  }
-}
-
-class _Key extends StatelessWidget {
-  const _Key({this.label, this.icon, this.onTap});
-
-  final String? label;
-  final IconData? icon;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Semantics(
-      button: true,
-      label: label ??
-          (icon == Icons.fingerprint_rounded ? context.l10n.fingerprint : context.l10n.backspace),
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        child: SizedBox(
-          width: 76,
-          height: 76,
-          child: Center(
-            child: icon != null
-                ? Icon(icon, color: colors.textMuted, size: 26)
-                : Text(
-                    label ?? '',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
-                      fontSize: 28,
-                      fontWeight: FontWeight.w500,
-                      color: colors.text,
-                    ),
-                  ),
-          ),
-        ),
       ),
     );
   }

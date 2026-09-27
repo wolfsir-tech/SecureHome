@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:secure_home/core/constants/app_constants.dart';
 import 'package:secure_home/core/theme/app_colors.dart';
+import 'package:secure_home/core/theme/app_shadows.dart';
 import 'package:secure_home/core/utils/phone_utils.dart';
 import 'package:secure_home/domain/entities/auth_method.dart';
 import 'package:secure_home/l10n/l10n.dart';
@@ -490,20 +491,32 @@ class _MethodTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final active = value && onChanged != null;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: SwitchListTile(
-        value: value,
-        onChanged: onChanged,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-          side: BorderSide(color: colors.border),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.surface,
+          gradient: active ? null : AppShadows.raisedGradient(colors),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          border: Border.all(
+            color: active ? colors.accent.withValues(alpha: 0.65) : colors.border,
+            width: active ? 1.6 : 1.0,
+          ),
+          boxShadow: active ? AppShadows.raisedSm(colors) : null,
         ),
-        tileColor: colors.surface,
-        secondary: Icon(icon, color: colors.accent),
-        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-        subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+        child: SwitchListTile(
+          value: value,
+          onChanged: onChanged,
+          contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+          tileColor: Colors.transparent,
+          secondary: Icon(icon, color: active ? colors.accent : colors.textMuted),
+          title: Text(title, style: Theme.of(context).textTheme.titleMedium),
+          subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+        ),
       ),
     );
   }
@@ -649,13 +662,14 @@ class _PermissionStep extends StatelessWidget {
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: colors.surface,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
             border: Border.all(color: colors.border),
+            boxShadow: AppShadows.raisedSm(colors),
           ),
           child: Row(
             children: [
               Icon(Icons.sms_rounded, color: colors.accent),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   l10n.allowSmsInfo,
